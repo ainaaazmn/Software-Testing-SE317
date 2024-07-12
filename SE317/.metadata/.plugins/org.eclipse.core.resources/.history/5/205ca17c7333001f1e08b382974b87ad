@@ -1,0 +1,63 @@
+package lab6;
+
+import static org.junit.Assert.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ATMandUtilityTestDataStorage {
+	
+	 private String checkingFile = "CheckingAccountData.txt";
+	 private String savingFile = "SavingAccountData.txt";
+	 private String billFile = "BillData.txt";
+	 
+    @Before
+    public void setUp() {
+        ATMandUtility.checkingFile = checkingFile;
+        ATMandUtility.savingFile = savingFile;
+        UtilityAccount.bill = billFile;
+    }
+    
+    @Test
+    public void testIncompatibleTypes() {
+        createTempFile(checkingFile, "checking=invalid\n");
+        createTempFile(savingFile, "saving=invalid\n");
+        createTempFile(billFile, "payment=invalid\n");
+
+        ATMandUtility.initializeCheckingAccount();
+        assertNull(ATMandUtility.checking);
+
+        ATMandUtility.initializeSavingAccount();
+        assertNull(ATMandUtility.saving);
+    }
+    
+    @After
+    public void tearDown() {
+        deleteTempFile(checkingFile);
+        deleteTempFile(savingFile);
+        deleteTempFile(billFile);
+    }
+
+    private void createTempFile(String fileName, String content) {
+        try (FileWriter writer = new FileWriter(fileName)) {
+            writer.write(content);
+        } catch (IOException e) {
+            fail("Failed to create temporary file: " + fileName);
+        }
+    }
+
+    private void deleteTempFile(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+}

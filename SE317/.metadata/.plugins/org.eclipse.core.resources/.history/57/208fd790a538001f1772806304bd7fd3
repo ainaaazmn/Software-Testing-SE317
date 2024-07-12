@@ -1,0 +1,59 @@
+package lab7;
+
+import static org.junit.Assert.*;
+
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class CalculatorAppTest {
+	
+	private CalculatorApp calculator;
+	
+	@Before
+	public void setup() {
+		
+		calculator = new CalculatorApp();
+	}
+	
+
+	@Test
+	public void testAddition() {
+		
+		calculator.appendToDisplay("5");
+		calculator.actionPerformed(new ActionEvent(new JButton("+"), ActionEvent.ACTION_PERFORMED, "+"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("8.0", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSubtraction() {
+		
+		calculator.appendToDisplay("10");
+		calculator.actionPerformed(new ActionEvent(new JButton("-"), ActionEvent.ACTION_PERFORMED, "-"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("7.0", calculator.display.getText());
+	}
+	
+	@Test
+	public void testMultiplication() {
+		
+		calculator.appendToDisplay("3.2");
+		calculator.actionPerformed(new ActionEvent(new JButton("*"), ActionEvent.ACTION_PERFORMED, "*"));
+		
+		calculator.appendToDisplay("4");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("12.8, calculator.display.getText());
+	}
+
+}

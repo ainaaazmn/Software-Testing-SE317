@@ -1,0 +1,290 @@
+package lab5;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.Before;
+
+public class HumidityTemperatureTestStyle2 {
+
+	@Before
+	public void setup() {
+		
+		HumidityTemperature.reset();
+	}
+	
+	//Temperature Sequence
+	@Test
+	public void testTemperatureSequence1() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 66;
+		HumidityTemperature.currentHumidity = 67;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(66, HumidityTemperature.currentTemperature);
+		assertEquals(67, HumidityTemperature.currentHumidity);
+		
+		assertEquals(66, HumidityTemperature.maxTemperature);
+		assertEquals(66, HumidityTemperature.minTemperature);
+		
+		assertEquals(67, HumidityTemperature.maxHumidity);
+		assertEquals(67, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("High", HumidityTemperature.humidityStatus);
+	}
+
+	@Test
+	public void testTemperatureSequence2() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 68;
+		HumidityTemperature.currentHumidity = 69;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(68, HumidityTemperature.currentTemperature);
+		assertEquals(69, HumidityTemperature.currentHumidity);
+		
+		assertEquals(68, HumidityTemperature.maxTemperature);
+		assertEquals(68, HumidityTemperature.minTemperature);
+		
+		assertEquals(69, HumidityTemperature.maxHumidity);
+		assertEquals(69, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("High", HumidityTemperature.humidityStatus);
+	}
+	
+	@Test
+	public void testTemperatureSequence3() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 69;
+		HumidityTemperature.currentHumidity = 23;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(69, HumidityTemperature.currentTemperature);
+		assertEquals(23, HumidityTemperature.currentHumidity);
+		
+		assertEquals(69, HumidityTemperature.maxTemperature);
+		assertEquals(69, HumidityTemperature.minTemperature);
+		
+		assertEquals(23, HumidityTemperature.maxHumidity);
+		assertEquals(23, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("Low", HumidityTemperature.humidityStatus);
+	}
+	
+	@Test
+	public void testTemperatureSequence4() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 67;
+		HumidityTemperature.currentHumidity = 45;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(67, HumidityTemperature.currentTemperature);
+		assertEquals(45, HumidityTemperature.currentHumidity);
+		
+		assertEquals(67, HumidityTemperature.maxTemperature);
+		assertEquals(67, HumidityTemperature.minTemperature);
+		
+		assertEquals(45, HumidityTemperature.maxHumidity);
+		assertEquals(45, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("OK", HumidityTemperature.humidityStatus);
+	}
+	
+	@Test
+	public void testTemperatureSequence5() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 63;
+		HumidityTemperature.currentHumidity = 56;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(63, HumidityTemperature.currentTemperature);
+		assertEquals(56, HumidityTemperature.currentHumidity);
+		
+		assertEquals(63, HumidityTemperature.maxTemperature);
+		assertEquals(63, HumidityTemperature.minTemperature);
+		
+		assertEquals(56, HumidityTemperature.maxHumidity);
+		assertEquals(56, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("High", HumidityTemperature.humidityStatus);
+	}
+	
+	@Test
+	public void testTemperatureSequence6() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 59;
+		HumidityTemperature.currentHumidity = 60;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(59, HumidityTemperature.currentTemperature);
+		assertEquals(60, HumidityTemperature.currentHumidity);
+		
+		assertEquals(59, HumidityTemperature.maxTemperature);
+		assertEquals(59, HumidityTemperature.minTemperature);
+		
+		assertEquals(60, HumidityTemperature.maxHumidity);
+		assertEquals(60, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("High", HumidityTemperature.humidityStatus);
+	}
+	
+	@Test
+	public void testTemperatureSequence7() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentTemperature = 53;
+		HumidityTemperature.currentHumidity = 54;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(53, HumidityTemperature.currentTemperature);
+		assertEquals(54, HumidityTemperature.currentHumidity);
+		
+		assertEquals(53, HumidityTemperature.maxTemperature);
+		assertEquals(53, HumidityTemperature.minTemperature);
+		
+		assertEquals(54, HumidityTemperature.maxHumidity);
+		assertEquals(54, HumidityTemperature.minHumidity);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("OK", HumidityTemperature.humidityStatus);
+	}
+	
+	
+	//Humidity Sequence
+	@Test
+	public void testHumiditySequence1() {
+		
+		HumidityTemperature.roundCount++;
+		
+		HumidityTemperature.currentHumidity = 53;
+		HumidityTemperature.currentTemperature = 67;
+		
+		HumidityTemperature.findTempTrend();
+		HumidityTemperature.findHumidityTrend();
+		
+		HumidityTemperature.findMaxMinTemp();
+		HumidityTemperature.findMaxMinHumidity();
+		
+		HumidityTemperature.humidity_Status(HumidityTemperature.currentHumidity);
+		
+		HumidityTemperature.prevTemperature = HumidityTemperature.currentTemperature;
+		HumidityTemperature.prevHumidity = HumidityTemperature.currentHumidity;
+		
+		assertEquals(53, HumidityTemperature.currentHumidity);
+		assertEquals(67, HumidityTemperature.currentTemperature);
+		
+		assertEquals(53, HumidityTemperature.maxHumidity);
+		assertEquals(53, HumidityTemperature.minHumidity);
+		
+		assertEquals(67, HumidityTemperature.maxTemperature);
+		assertEquals(67, HumidityTemperature.minTemperature);
+		
+		assertEquals("Stable", HumidityTemperature.humidityTrend);
+		assertEquals("Stable", HumidityTemperature.temperatureTrend);
+		
+		assertEquals("OK", HumidityTemperature.humidityStatus);
+	}
+}

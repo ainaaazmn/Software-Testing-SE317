@@ -1,0 +1,32 @@
+package lab5;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.Before;
+
+public class TemperatureTest {
+
+	@Before
+	public void setup() {
+		HumidityTemperature.reset();
+	}
+	
+	//Test cases for current temperature
+	@Test
+	public void testReceiveCurrentTemperature() {
+		
+		HumidityTemperature.currentTemperature = 98;
+		
+		assertEquals(98, HumidityTemperature.currentTemperature);
+	}
+	
+	@Test
+	public void testHumidityUpperBoundaryFalse() {
+		
+		HumidityTemperature.currentTemperature = 1000;
+		
+		assertEquals(false, HumidityTemperature.isValidTemperature(HumidityTemperature.currentTemperature));
+	}
+
+}

@@ -1,0 +1,204 @@
+package lab7;
+
+import static org.junit.Assert.*;
+
+import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class CalculatorAppTest {
+	
+	private CalculatorApp calculator;
+	
+	@Before
+	public void setup() {
+		
+		calculator = new CalculatorApp();
+	}
+
+	@Test
+	public void testAdditionPositiveNumbers() {
+		
+		calculator.appendToDisplay("5");
+		calculator.actionPerformed(new ActionEvent(new JButton("+"), ActionEvent.ACTION_PERFORMED, "+"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("8", calculator.display.getText());
+	}
+	
+	@Test
+	public void testAdditionNegativeNumbers() {
+		
+		calculator.appendToDisplay("-5");
+		calculator.actionPerformed(new ActionEvent(new JButton("+"), ActionEvent.ACTION_PERFORMED, "+"));
+		
+		calculator.appendToDisplay("-3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("-8", calculator.display.getText());
+	}
+	
+	@Test
+	public void testAdditionFirstNegativeNumber() {
+		
+		calculator.appendToDisplay("-5");
+		calculator.actionPerformed(new ActionEvent(new JButton("+"), ActionEvent.ACTION_PERFORMED, "+"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("-2", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSubtractionPositiveNumbers() {
+		
+		calculator.appendToDisplay("10");
+		calculator.actionPerformed(new ActionEvent(new JButton("-"), ActionEvent.ACTION_PERFORMED, "-"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("7", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSubtractionNegativeNumbers() {
+		
+		calculator.appendToDisplay("-10");
+		calculator.actionPerformed(new ActionEvent(new JButton("-"), ActionEvent.ACTION_PERFORMED, "-"));
+		
+		calculator.appendToDisplay("-3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("-7", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSubtractionFirtsNegativeNumber() {
+		
+		calculator.appendToDisplay("-10");
+		calculator.actionPerformed(new ActionEvent(new JButton("-"), ActionEvent.ACTION_PERFORMED, "-"));
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("-13", calculator.display.getText());
+	}
+	
+	@Test
+	public void testMultiplication() {
+		
+		calculator.appendToDisplay("3.2");
+		calculator.actionPerformed(new ActionEvent(new JButton("*"), ActionEvent.ACTION_PERFORMED, "*"));
+		
+		calculator.appendToDisplay("4");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("12.8", calculator.display.getText());
+	}
+	
+	@Test
+	public void testDivision() {
+		
+		calculator.appendToDisplay("100");
+		calculator.actionPerformed(new ActionEvent(new JButton("/"), ActionEvent.ACTION_PERFORMED, "/"));
+		
+		calculator.appendToDisplay("13");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("7.692307692", calculator.display.getText());
+	}
+
+	@Test
+	public void testDivisionByZero() {
+		
+		calculator.appendToDisplay("8");
+		calculator.actionPerformed(new ActionEvent(new JButton("/"), ActionEvent.ACTION_PERFORMED, "/"));
+		
+		calculator.appendToDisplay("0");
+		calculator.actionPerformed(new ActionEvent(new JButton("="), ActionEvent.ACTION_PERFORMED, "="));
+		
+		assertEquals("Error", calculator.display.getText());
+		
+	}
+	
+	@Test
+	public void testSquare() {
+		
+		calculator.appendToDisplay("3");
+		calculator.actionPerformed(new ActionEvent(new JButton("^2"), ActionEvent.ACTION_PERFORMED, "^2"));
+		assertEquals("9", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSquareRoot() {
+		
+		calculator.appendToDisplay("16");
+		calculator.actionPerformed(new ActionEvent(new JButton("sqrt"), ActionEvent.ACTION_PERFORMED, "sqrt"));
+		assertEquals("4", calculator.display.getText());
+	}
+	
+	@Test
+	public void testSquareRootNegative() {	
+		
+		calculator.appendToDisplay("-16");
+		calculator.actionPerformed(new ActionEvent(new JButton("sqrt"), ActionEvent.ACTION_PERFORMED, "sqrt"));
+		assertEquals("Error", calculator.display.getText());
+	
+	}
+	
+	@Test
+	public void testMemoryAdd() {
+		
+		calculator.appendToDisplay("64");
+		calculator.actionPerformed(new ActionEvent(new JButton("sqrt"), ActionEvent.ACTION_PERFORMED, "sqrt"));
+		assertEquals("8", calculator.display.getText());
+		
+		calculator.actionPerformed(new ActionEvent(new JButton("M+"), ActionEvent.ACTION_PERFORMED, "M+"));
+		assertEquals(8.0, calculator.memory);
+	}
+	
+	
+	@Test
+	public void testDelete() {
+		
+		calculator.appendToDisplay("1234");
+		calculator.actionPerformed(new ActionEvent(new JButton("Delete"), ActionEvent.ACTION_PERFORMED, "Delete"));
+		assertEquals("123", calculator.display.getText());
+		
+	}
+	
+	@Test
+	public void testClear() {
+		
+		calculator.appendToDisplay("1234");
+		calculator.actionPerformed(new ActionEvent(new JButton("Clear"), ActionEvent.ACTION_PERFORMED, "Clear"));
+		assertEquals("0", calculator.display.getText());
+		
+	}
+	
+	
+	@Test
+	public void testOutOfBoundPositive() {
+		
+		assertThrows(IllegalArgumentException.class, () -> {
+			
+			calculator.appendToDisplay("10000000000");
+		});
+	}
+	
+	@Test
+	public void testOutOfBoundNegative() {
+		
+		assertThrows(IllegalArgumentException.class, () -> {
+			
+			calculator.appendToDisplay("-89674532589");
+		});
+	}
+}

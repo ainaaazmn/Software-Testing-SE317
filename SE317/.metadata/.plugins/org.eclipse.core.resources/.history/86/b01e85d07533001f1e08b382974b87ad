@@ -1,0 +1,374 @@
+package lab6;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class ATMandUtility {
+	
+	protected static String bank_username;
+	protected static String bank_password;
+	
+	protected static String utility_username;
+	protected static String utility_password;
+	
+	protected static String checkingFile = "CheckingAccount.txt";
+	protected static String savingFile = "SavingAccount.txt";
+	
+	protected static CheckingAccount checking = null;
+	protected static SavingAccount saving = null;
+
+	public static void main(String[] args) {
+		
+		int accountType;
+	
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("1. Logging on to Bank Accounts");
+		System.out.println("2. Logging on to  Utility Company Account");
+		
+		System.out.println("Account type (1/2): ");
+		accountType = scanner.nextInt();
+		
+		if(accountType == 1) {
+			ATMandUtility.BankAccountLogin();
+			ATMandUtility.BankAccountActivity();
+		}
+		
+		else if(accountType == 2) {
+			ATMandUtility.UtilityCompanyLogin();	
+			ATMandUtility.UtilityCompanyActivity();	
+		}
+		
+		else {
+			
+			System.out.println("Wrong Input. Exitting Program...");
+			System.exit(0);
+		}	
+			
+	}
+	
+	
+	public static void BankAccountLogin() {
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("\n");
+		System.out.println("Bank Account");
+		
+			
+			System.out.println("Enter your username: ");
+			bank_username = scanner.next();
+			
+			System.out.println("Enter your password: ");
+			bank_password = scanner.next();
+			
+			if(bank_username.equals("se317user") && bank_password.equals("summer2024")) {
+				
+				System.out.println("Succesfully login into your Bank Account!");
+				
+			}
+			
+			else {
+				
+				 throw new IllegalArgumentException("Incorrect username or password."); 
+			}
+		
+	}
+	
+	public static void initializeCheckingAccount(){
+		
+		try {
+			
+			Scanner fileChecking = new Scanner(new File(checkingFile));
+			
+			while(fileChecking.hasNext()) {
+				
+				String lineIn = fileChecking.nextLine();
+				String[] input = lineIn.split("=");
+				
+			  checking = new CheckingAccount(Double.parseDouble(input[1]));	
+				
+			}
+			
+			fileChecking.close();
+			
+		} catch(IOException e) {
+			saving = null;
+			System.out.println("File not found");	
+		} catch (NumberFormatException e) {
+            saving = null;
+            throw new IllegalArgumentException("Invalid number format");
+        }
+		
+	}
+	
+	public static void initializeSavingAccount() {
+		
+		try {
+			
+			Scanner fileSaving = new Scanner(new File(savingFile));
+			
+			while(fileSaving.hasNext()) {
+				
+				String lineIn = fileSaving.nextLine();
+				String[] input = lineIn.split("=");
+				
+			  saving = new SavingAccount(Double.parseDouble(input[1]));	
+				
+			}
+			
+			fileSaving.close();
+			
+		} catch(IOException e) {
+			  saving = null;
+			System.out.println("File not found");	
+		} catch (NumberFormatException e) {
+            saving = null;
+            throw new IllegalArgumentException("Invalid number format");
+        }
+	}
+	
+	
+	public static void BankAccountActivity() {
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		int bankAccount;
+		
+		System.out.println("1. Checking Account");
+		System.out.println("2. Saving Account");
+		
+		System.out.println("Account type (1/2): ");
+		
+		bankAccount = scanner.nextInt();
+		
+		initializeCheckingAccount();
+		initializeSavingAccount();
+	
+		//Checking Account activities
+		if(bankAccount == 1) {
+			
+			int choosenActivity = -1;
+			
+			while(choosenActivity != 7) {
+				
+				System.out.println("---------------------------------");
+				System.out.println("1. Deposit Money");
+				System.out.println("2. Withdraw Money");
+				System.out.println("3. Transfer to Saving Account");
+				System.out.println("4. Pay Bills");
+				System.out.println("5. Checking Account Balance");
+				System.out.println("6. Log on to Utility Company");
+				System.out.println("7. Quit");
+				
+				System.out.println("Choose Activity (1/2/3/4/5/6/7): ");
+				choosenActivity = scanner.nextInt();
+				
+				
+				switch(choosenActivity) {
+				
+				case 1:
+					double depositAmount;
+					
+					System.out.println("Amount to Deposit: ");
+					depositAmount = scanner.nextDouble();
+					
+					checking.deposit(depositAmount);
+					break;
+					
+				case 2:
+					double withdrawAmount;
+					
+					System.out.println("Amount to Withdraw: ");
+					withdrawAmount = scanner.nextDouble();
+					
+					checking.withdraw(withdrawAmount);
+					break;
+					
+					
+				case 3:
+					double transferAmount;
+					
+					System.out.println("Amount to transfer to Saving Account: ");
+					transferAmount = scanner.nextDouble();
+					
+					checking.transferToSaving(saving, transferAmount);
+					break;
+					
+				
+				case 4:
+					double paymentAmount;
+					
+					System.out.println("Amount to Pay: ");
+					paymentAmount = scanner.nextDouble();
+					
+					checking.payBills(paymentAmount);
+					break;
+					
+				case 5:
+					checking.checkBalance();
+					break;
+
+				case 6:
+					System.out.println("Transferring to Utility Company Account...");
+					ATMandUtility.UtilityCompanyActivity();
+					break;
+					
+				case 7:
+					System.out.println("Exitting the program. Thank you for using our service!");
+					break;
+					
+				default:
+					System.out.println("You have entered an unrecognizable activity number. Try again.");
+					break;
+					
+				}
+				
+			}	
+			
+		}
+		
+		
+		//Saving account activity
+		else if(bankAccount == 2) {
+			
+			int choosenActivity = -1;
+			
+			while(choosenActivity != 4) {
+				
+				System.out.println("---------------------------------");
+				System.out.println("1. Deposit Money");
+				System.out.println("2. Transfer to Checking Account");
+				System.out.println("3. Saving Account Balance");
+				System.out.println("4. Quit");
+				
+				System.out.println("Choose Activity (1/2/3/4): ");
+				choosenActivity = scanner.nextInt();
+				
+				switch(choosenActivity) {
+				
+				case 1:
+					double depositAmount;
+					
+					System.out.println("Amount to Deposit: ");
+					depositAmount = scanner.nextDouble();
+					
+					saving.deposit(depositAmount);
+					break;
+					
+				case 2:
+					double transferAmount;
+					
+					System.out.println("Amount to transfer to Checking Account: ");
+					transferAmount = scanner.nextDouble();
+					
+					saving.transferToChecking(checking, transferAmount);
+					break;
+					
+				case 3:
+					saving.checkBalance();
+					break;
+					
+				case 4:
+					System.out.println("Exitting the program. Thank you for using our service!");
+					break;
+					
+				default:
+					System.out.println("You have entered an unrecognizable activity number. Try again.");
+					break;
+					
+				}
+				
+			}
+	
+	
+		}
+	}
+	
+	
+	public static void UtilityCompanyLogin() {
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		String username, password;
+		
+		System.out.println("\n");
+		System.out.println("Utility Company Account");
+		
+			System.out.println("Enter your username: ");
+			utility_username = scanner.next();
+			
+			System.out.println("Enter your password: ");
+			utility_password = scanner.next();
+			
+			if(utility_username.equals("SE317User") && utility_password.equals("summer2024")) {
+				
+				System.out.println("Succesfully login into your Utility Account!");
+				
+			}
+			
+			
+			else {
+				
+				 throw new IllegalArgumentException("Incorrect username or password.");
+				
+			}
+		
+	}
+	
+	public static void UtilityCompanyActivity() {
+		
+		Scanner scanner = new Scanner(System.in); 
+		
+		int activity = -1;
+		
+		System.out.println("---------------------------------");
+		System.out.println("1. Check bill payment history");
+		System.out.println("2. Make payment");
+		System.out.println("To QUIT, Press any number");
+		
+		activity = scanner.nextInt();
+		
+		if(activity == 1) {
+			
+			int makePayment = -1;
+			
+			System.out.println("---------------------------------");
+			System.out.println("Bill Payment History");
+			System.out.println(" ");
+			
+			UtilityAccount.billPaymentHistory();
+			
+			System.out.println(" ");
+			System.out.println("Are you planning to pay your bills?");
+			System.out.println("Enter 1 for YES");
+			System.out.println("Enter any number to EXIT");
+			makePayment = scanner.nextInt();
+			
+			if(makePayment == 1) {
+				
+				ATMandUtility.BankAccountActivity();
+			}
+			
+			else {
+				
+				System.out.println("Exitting the program. Thank you for using our service!");
+				System.exit(0);
+			}
+			
+		}
+		
+		else if(activity == 2) {
+			ATMandUtility.BankAccountActivity();
+		}
+		
+		
+		else {
+			
+			System.out.println("Exitting the program. Thank you for using our service!");
+			System.exit(0);
+		}
+		
+	}
+}

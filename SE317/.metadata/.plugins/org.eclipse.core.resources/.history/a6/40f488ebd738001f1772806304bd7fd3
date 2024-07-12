@@ -1,0 +1,706 @@
+package lab7;
+
+/**
+ * 
+ * Initial Code obtained from ChatGPT 
+ * Modified code is below (not commented)
+ * 
+ */
+
+/*
+ * 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Stack;
+
+public class CalculatorApp extends JFrame implements ActionListener {
+    private JTextField display;
+    private double memory = 0;
+    private StringBuilder currentInput = new StringBuilder();
+    private Stack<String> operations = new Stack<>();
+
+    public CalculatorApp() {
+        // Set up the frame
+        setTitle("Scientific Calculator");
+        setSize(400, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Set up the display
+        display = new JTextField();
+        display.setEditable(false);
+        display.setFont(new Font("Arial", Font.PLAIN, 24));
+        add(display, BorderLayout.NORTH);
+
+        // Set up the panel with buttons
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 4));
+        addButtons(panel);
+        add(panel, BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+
+    private void addButtons(JPanel panel) {
+        String[] buttons = {
+            "7", "8", "9", "/", 
+            "4", "5", "6", "*", 
+            "1", "2", "3", "-", 
+            "0", ".", "=", "+", 
+            "C", "sqrt", "^2", "M+", 
+            "M-", "MR", "MC", "Del"
+        };
+
+        for (String text : buttons) {
+            JButton button = new JButton(text);
+            button.addActionListener(this);
+            panel.add(button);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        switch (command) {
+            case "C":
+                clearDisplay();
+                break;
+            case "Del":
+                deleteLastCharacter();
+                break;
+            case "=":
+                calculateResult();
+                break;
+            case "sqrt":
+                calculateSquareRoot();
+                break;
+            case "^2":
+                calculateSquare();
+                break;
+            case "M+":
+                addToMemory();
+                break;
+            case "M-":
+                subtractFromMemory();
+                break;
+            case "MR":
+                recallMemory();
+                break;
+            case "MC":
+                clearMemory();
+                break;
+            default:
+                appendToDisplay(command);
+                break;
+        }
+    }
+
+    private void clearDisplay() {
+        currentInput.setLength(0);
+        display.setText("");
+    }
+
+    private void deleteLastCharacter() {
+        int length = currentInput.length();
+        if (length > 0) {
+            currentInput.setLength(length - 1);
+            display.setText(currentInput.toString());
+        }
+    }
+
+    private void calculateResult() {
+        try {
+            double result = evaluate(currentInput.toString());
+            display.setText(String.valueOf(result));
+            currentInput.setLength(0);
+            currentInput.append(result);
+        } catch (Exception ex) {
+            display.setText("Error");
+        }
+    }
+
+    private void calculateSquareRoot() {
+        try {
+            double value = Double.parseDouble(currentInput.toString());
+            double result = Math.sqrt(value);
+            display.setText(String.valueOf(result));
+            currentInput.setLength(0);
+            currentInput.append(result);
+        } catch (NumberFormatException ex) {
+            display.setText("Error");
+        }
+    }
+
+    private void calculateSquare() {
+        try {
+            double value = Double.parseDouble(currentInput.toString());
+            double result = Math.pow(value, 2);
+            display.setText(String.valueOf(result));
+            currentInput.setLength(0);
+            currentInput.append(result);
+        } catch (NumberFormatException ex) {
+            display.setText("Error");
+        }
+    }
+
+    private void addToMemory() {
+        try {
+            memory += Double.parseDouble(currentInput.toString());
+        } catch (NumberFormatException ex) {
+            display.setText("Error");
+        }
+    }
+
+    private void subtractFromMemory() {
+        try {
+            memory -= Double.parseDouble(currentInput.toString());
+        } catch (NumberFormatException ex) {
+            display.setText("Error");
+        }
+    }
+
+    private void recallMemory() {
+        display.setText(String.valueOf(memory));
+        currentInput.setLength(0);
+        currentInput.append(memory);
+    }
+
+    private void clearMemory() {
+        memory = 0;
+    }
+
+    private void appendToDisplay(String value) {
+        currentInput.append(value);
+        display.setText(currentInput.toString());
+    }
+
+    private double evaluate(String expression) {
+        char[] tokens = expression.toCharArray();
+        Stack<Double> values = new Stack<>();
+        Stack<Character> ops = new Stack<>();
+
+        for (int i = 0; i < tokens.length; i++) {
+            if (tokens[i] == ' ') continue;
+
+            if (tokens[i] >= '0' && tokens[i] <= '9') {
+                StringBuilder buffer = new StringBuilder();
+                while (i < tokens.length && (tokens[i] >= '0' && tokens[i] <= '9' || tokens[i] == '.')) {
+                    buffer.append(tokens[i++]);
+                }
+                values.push(Double.parseDouble(buffer.toString()));
+                i--;
+            } else if (tokens[i] == '(') {
+                ops.push(tokens[i]);
+            } else if (tokens[i] == ')') {
+                while (ops.peek() != '(') values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+                ops.pop();
+            } else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
+                while (!ops.isEmpty() && hasPrecedence(tokens[i], ops.peek())) {
+                    values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+                }
+                ops.push(tokens[i]);
+            }
+        }
+
+        while (!ops.isEmpty()) values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+
+        return values.pop();
+    }
+
+    private boolean hasPrecedence(char op1, char op2) {
+        if (op2 == '(' || op2 == ')') return false;
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
+        return true;
+    }
+
+    private double applyOp(char op, double b, double a) {
+        switch (op) {
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                if (b == 0) throw new UnsupportedOperationException("Cannot divide by zero");
+                return a / b;
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        new CalculatorApp();
+    }
+}
+ */
+
+/**
+ * Modified Code based on Lab 7 Requirements
+ */
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Stack;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+
+/**
+ * CalculatorApp is a simple scientific calculator application
+ * that provides basic arithmetic operations, memory functions,
+ * and additional scientific functions like square and square root.
+ */
+public class CalculatorApp extends JFrame implements ActionListener{
+	
+	protected JTextField display;
+	protected final int MAX_DECIMAL_PLACES = 9;
+	
+	protected double memory = 0;
+	protected double result = 0;
+	
+	protected JPanel panel;
+	
+	protected StringBuilder currentInput = new StringBuilder();
+	
+	protected Stack<Double> values = new Stack<>();
+	protected String ops = null;
+	
+	protected boolean lastOperationValid = false;
+	
+	public CalculatorApp() {
+		
+		//Set up the frame
+		setTitle("Scientific Calculator SE317");
+		setSize(400, 600);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
+		
+		//Set up the display
+		display = new JTextField();
+		display.setEditable(false);
+		display.setFont(new Font("Arial", Font.PLAIN, 18));
+		add(display, BorderLayout.NORTH);
+		display.setText("0");
+		
+		//Set up the panel with buttons
+		panel = new JPanel();
+		panel.setLayout(new GridLayout(6, 4));
+		addButtons(panel);
+		add(panel, BorderLayout.CENTER);
+		
+		setVisible(true);
+		
+	}
+
+	/**
+     * Adds calculator buttons to the panel.
+     * @param panel the panel to which buttons are added
+     */
+	protected void addButtons(JPanel panel) {
+		
+		String[] buttons = {
+				"7", "8", "9", "/",
+				"4", "5", "6", "*",
+				"1", "2", "3", "-",
+				"0", ".", "=", "+",
+				"Delete", "Clear", "^2", "sqrt",
+				"M+", "M-", "M-Recall", "M-Clear" };
+		
+		for(String text: buttons) {
+			
+			JButton button = new JButton(text);
+			button.addActionListener(this);
+			panel.add(button);
+		}
+		
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		String command = e.getActionCommand();
+		JButton sourceButton = (JButton) e.getSource();
+		
+		switch(command) {
+		
+		case "M+":
+			addToMemory();
+			break;
+			
+		case "M-":
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			subtractFromMemory();
+			break;
+			
+		case "M-Recall":
+			recallMemory();
+			break;
+			
+		case "M-Clear":
+			clearMemory();
+			break;
+			
+		case "Delete":
+			deleteLastCharacter();
+			break;
+			
+		case "Clear":
+			clearDisplay();
+			break;
+			
+		case "^2":
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			
+			calculateSquare();
+			break;
+			
+		case "sqrt":
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			
+			calculateSquareRoot();
+			break;
+			
+		case "=":
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			
+			calculateResult();
+			break;
+			
+		case "+":
+			ops = "+";
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			
+			setButtonActive(sourceButton);
+			break;
+			
+		case "-":
+			
+			if(currentInput.length() == 0 || ops != null) {
+				appendToDisplay("-");
+			}
+			
+			else {
+				ops = "-";
+				values.add(Double.valueOf(currentInput.toString()));
+				currentInput.setLength(0);	
+				setButtonActive(sourceButton);
+			}
+			
+			break;
+			
+		case "*":
+			ops = "*";
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			
+			setButtonActive(sourceButton);
+			break;	
+			
+		case "/":
+			ops = "/";
+			values.add(Double.valueOf(currentInput.toString()));
+			currentInput.setLength(0);
+			setButtonActive(sourceButton);
+			break;
+			
+		default:
+			appendToDisplay(command);
+			break;
+		
+		}
+		
+	}
+	
+	/**
+     * Formats a number to remove trailing zeros.
+     * @param value the number to be formatted
+     * @return the formatted number as a string
+     */
+	protected String formatNumber(double value) {
+		
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(MAX_DECIMAL_PLACES, RoundingMode.HALF_UP);
+		bd = bd.stripTrailingZeros();
+		
+		return bd.toPlainString();
+	}
+	
+	
+	/**
+     * Appends a value to the display and the current input.
+     * @param value the value to append
+     */
+	protected void appendToDisplay(String value) {
+		
+		if(currentInput.toString().equals("0") && !value.equals("-")) {
+			currentInput.setLength(0);
+		}
+
+		  try {
+			  
+			  if(value.equals("-") && (currentInput.length() == 0 || ops != null)) {
+				  currentInput.append(value);
+		          display.setText(currentInput.toString());
+			  }
+			  
+			  else {
+				   double currentValue = Double.valueOf(currentInput.toString() + value);
+			        if (currentValue < 10000000 && currentValue > -10000000) {
+			            currentInput.append(value);
+			            display.setText(currentInput.toString());
+			        } else {
+			        	  display.setText("Out of Range");
+			            throw new IllegalArgumentException("Value is out of bounds");
+			        }
+			  }
+		     
+		    } catch (NumberFormatException e) {
+		        display.setText("Error");
+		    }
+		
+	}
+
+
+    /**
+     * Adds the current result to memory.
+     */
+	protected void addToMemory() {
+		
+		if(lastOperationValid) {
+		try {
+			
+			memory += result;
+			display.setText(String.valueOf(formatNumber(memory)));
+			
+		}
+		catch(NumberFormatException e) {
+			display.setText("Error");
+			}
+		}
+		
+		else {
+			display.setText("Error");
+		}
+		
+	} 
+	
+	/**
+     * Subtracts the current value from memory.
+     */
+	protected void subtractFromMemory() {
+		
+		if(lastOperationValid) {
+			try {
+				
+				double value = values.pop();
+				memory -= value;
+			
+				display.setText(String.valueOf(formatNumber(memory)));
+			
+			}
+			catch(NumberFormatException e) {
+				display.setText("Error");
+				}
+			}
+			
+			else {
+				display.setText("Error");
+			}
+	}
+	
+	/**
+     * Recalls the value stored in memory.
+     */
+	protected void recallMemory() {
+		
+		display.setText(String.valueOf(formatNumber(memory)));
+	}
+
+	/**
+     * Clears the memory.
+     */
+	protected void clearMemory() {
+		memory = 0;
+		display.setText(String.valueOf(formatNumber(memory)));
+	}
+	
+	/**
+     * Deletes the last character in the current input.
+     */
+	protected void deleteLastCharacter() {
+		
+		int length = currentInput.length();
+		
+		if(length > 0) {
+			
+			currentInput.setLength(length-1);
+			display.setText(currentInput.toString());
+			
+			if(currentInput.length() == 0) {
+				
+				display.setText("0");
+			}
+		}
+		
+	}
+	
+	
+	/**
+     * Clears the display and resets the calculator state.
+     */
+	protected void clearDisplay() {
+		
+		values.clear();
+		ops = null;
+		memory = 0;
+		
+		currentInput.setLength(0);
+		display.setText("0");
+		resetButtonStyles();
+		
+	}
+	
+	protected void calculateSquare() {
+		
+		result = 0;
+		
+		try {
+			double value = values.pop();
+			result = Math.pow(value, 2);
+			
+			display.setText(String.valueOf(formatNumber(result)));
+			lastOperationValid = true;
+			
+		}catch(NumberFormatException e) {
+			
+			display.setText("Error");
+			lastOperationValid = false;
+		}
+		
+		resetButtonStyles();
+	}
+	
+	protected void calculateSquareRoot() {
+		
+		result = 0;
+		try {
+			
+			double value = values.pop();
+			result = Math.sqrt(value);
+			
+			display.setText(String.valueOf(formatNumber(result)));
+			lastOperationValid = true;
+			
+		}catch(NumberFormatException e) {
+			
+			display.setText("Error");
+			lastOperationValid = false;
+		}
+		
+
+		resetButtonStyles();
+		
+	}
+	
+	
+	protected void calculateResult() {
+		
+		result = 0;
+		double value1 = 0, value2 = 0;
+		
+		try {
+			
+			if(ops.equals("+")) {
+				
+				value2 = values.pop();
+				value1 = values.pop();
+				
+				result = value1 + value2;
+				
+			}
+			
+			else if(ops.equals("-")) {
+				
+				value2 = values.pop();
+				value1 = values.pop();
+				
+				result = value1 - value2;
+				
+			}
+			
+			else if(ops.equals("*")) {
+				
+				value2 = values.pop();
+				value1 = values.pop();
+				
+				result = value1 * value2;
+				
+			}
+			
+			else if(ops.equals("/")) {
+				
+				value2 = values.pop();
+				value1 = values.pop();
+				
+				if(value2 == 0) {
+					display.setText("Error");
+					throw new UnsupportedOperationException("Cannot divide by zero");
+				} 
+				result = value1 / value2;
+			}
+			
+			display.setText(String.valueOf(formatNumber(result)));
+			lastOperationValid = true;
+			
+		}catch(Exception e) {
+			
+			display.setText("Error");
+			lastOperationValid = false;
+		}
+		
+		resetButtonStyles();
+	}
+	
+	protected void setButtonActive(JButton button) {
+		
+		button.setFont(new Font("Arial", Font.BOLD, 18));
+		button.setBackground(Color.CYAN);
+	}
+	
+	protected void resetButtonStyles() {
+
+	        for (Component comp : panel.getComponents()) {
+
+	            if (comp instanceof JButton) {
+
+	                JButton button = (JButton) comp;
+	                
+	                button.setFont(new Font("Arial", Font.BOLD, 13));
+	                button.setBackground(null);
+	            }
+
+	        }
+	    }
+	
+	public static void main(String[] args) {	
+		new CalculatorApp();
+	}
+	
+}
+
